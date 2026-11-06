@@ -1,0 +1,333 @@
+# Project Specification: Offline Mess Billing Manager
+
+## 1. Project Overview
+
+Build a mobile application using Flutter and Dart for small hostel messes, student food shops, and monthly meal providers around colleges in Nepal.
+
+These businesses typically serve students breakfast and dinner at a fixed per-meal rate. Students may also order additional items such as eggs, curd, meat, and other menu items at separately configured prices.
+
+Shop owners currently record meals and extra purchases in notebooks and calculate each student's monthly bill manually. This application will digitize the process, reduce calculation errors, save time, and provide organized billing records.
+
+**Initial project scope:** A fully offline, single-shop billing application using Flutter and Hive for local data persistence. No backend, cloud database, or internet connection should be required for core functionality.
+
+## 2. Target Users
+
+- Small hostel mess owners.
+- Local restaurants serving students on a monthly billing basis.
+- Food shops that track individual customers' consumption and outstanding payments.
+
+The application should be simple enough for a non-technical shop owner to use daily.
+
+## 3. Technology Stack
+
+- Flutter and Dart.
+- Hive local database, using a compatible and maintained Hive implementation.
+- Provider or another lightweight state-management approach if appropriate for the existing project.
+- Repository-based data access and clearly separated business logic.
+- Local PDF generation and file export.
+- Flutter share functionality for sharing generated bills and reports.
+
+Avoid unnecessary dependencies, backend services, and online APIs.
+
+## 4. Owner Profile and Shop Settings
+
+Allow the owner to configure and edit:
+
+- Owner's name.
+- Shop or mess name.
+- Address and phone number.
+- Optional shop logo.
+- Currency, defaulting to NPR (Nepalese Rupees).
+- Default breakfast and dinner prices.
+- Billing preferences.
+
+Initially, each installation represents one independent shop. Structure the application so multi-shop support and cloud synchronization can be added in the future.
+
+## 5. Customer Management
+
+The owner must be able to:
+
+- Add a customer with a name and optional phone number.
+- Edit customer details.
+- View all active and inactive customers.
+- Activate or deactivate a customer.
+- View an individual customer's complete consumption, billing, and payment history.
+- Search customers by name.
+- Open a customer's current monthly bill.
+- View previous monthly statements and outstanding balances.
+
+Use unique internal IDs for customers. Do not rely on names as unique identifiers.
+
+Deactivating a customer must preserve historical records. Customers should not be permanently deleted if they have existing billing or payment history.
+
+## 6. Menu and Price Management
+
+The owner can add, edit, and deactivate menu items.
+
+Each item should support:
+
+- Item name.
+- Category, such as meal, beverage, dairy, or extra.
+- Unit, such as serving, piece, or plate.
+- Configurable price in NPR.
+- Active or inactive status.
+
+Breakfast and dinner must be configurable independently. Both may default to Rs. 85, but the owner can change these values.
+
+Examples of additional items include eggs, curd, meat, tea, and any custom items the owner wishes to add.
+
+All billing calculations must use the configured prices. Existing historical entries must preserve the price charged at the time of the transaction, even if the owner changes a menu price later.
+
+## 7. Daily Meal Recording
+
+This is the application's primary daily workflow.
+
+Provide a date selector and a list of active customers.
+
+For each customer, the owner should be able to record:
+
+- Breakfast consumed or not consumed.
+- Dinner consumed or not consumed.
+- Additional items and quantities.
+- Optional notes.
+
+Provide quick controls to mark meals consumed, undo an entry, and correct an existing record.
+
+Support a fast daily-entry interface where the owner can record meals for many customers without repeatedly navigating between screens.
+
+Requirements:
+
+- No meal should be charged unless it has been recorded.
+- A customer may eat breakfast without dinner, or dinner without breakfast.
+- Customers may skip entire days.
+- Prevent accidental duplicate meal entries for the same customer, meal type, and date.
+- Allow authorized corrections to previously recorded entries.
+- Support multiple additional-item entries for a customer on the same date.
+- Record the transaction date and preserve the applicable unit price.
+
+## 8. Individual Customer Ledger
+
+Each customer must have an itemized chronological ledger containing:
+
+- Date.
+- Breakfast charge.
+- Dinner charge.
+- Additional items and quantities.
+- Unit prices and line totals.
+- Adjustments, if applicable.
+- Payments received.
+- Monthly billing information.
+
+The owner should be able to filter the ledger by date range or month.
+
+Provide a clear breakdown explaining how every monthly total was calculated.
+
+## 9. Billing Calculation Engine
+
+Keep all billing calculations in a dedicated business-logic layer, separate from the UI.
+
+Core formulas:
+
+Meal charges = breakfast charges + dinner charges.
+
+Additional-item charges = sum of (quantity × recorded unit price) for every additional-item entry.
+
+Total monthly charges = meal charges + additional-item charges + applicable adjustments.
+
+Outstanding balance = previous outstanding balance + current charges − payments and credits applied.
+
+Do not treat a recorded meal, a generated bill, and a payment as the same type of transaction.
+
+Use integer monetary values in the smallest appropriate currency unit, such as paisa, or another consistent exact-money representation to avoid floating-point rounding errors.
+
+Ensure totals are recalculated consistently whenever an entry is added, edited, or removed.
+
+## 10. Monthly Billing
+
+Allow the owner to select a customer and billing month.
+
+Generate a statement containing:
+
+- Shop name and contact details.
+- Customer name.
+- Billing period.
+- Breakfast count and amount.
+- Dinner count and amount.
+- Itemized additional items with quantities and amounts.
+- Previous outstanding balance, where applicable.
+- Current month's charges.
+- Payments and credits applied.
+- Total amount due.
+
+Support monthly statements for individual customers and a shop-wide summary for all active and inactive customers with relevant activity.
+
+A finalized monthly bill should remain stable. If corrections are needed, the owner must explicitly reopen or amend the bill. Never silently change a finalized historical statement when menu prices or unrelated settings change.
+
+## 11. Payment Management
+
+Allow the owner to record:
+
+- Customer.
+- Payment date.
+- Amount received.
+- Optional payment method.
+- Optional notes or reference.
+
+Support partial payments and full payments.
+
+Show total charges, total payments, and the remaining balance separately.
+
+Never interpret a bill as paid merely because the owner has viewed or generated it.
+
+Preserve payment history. Corrections to payments must not silently delete the audit trail or corrupt historical balances.
+
+If a customer pays more than the amount currently due, handle the excess as a customer credit rather than losing the amount.
+
+## 12. Editing and Error Correction
+
+The owner must be able to correct:
+
+- An incorrectly recorded meal.
+- The quantity of an additional item.
+- An incorrect item or price.
+- A duplicate entry.
+- A payment entered incorrectly.
+- Customer details.
+
+After a correction, all affected totals and outstanding balances must be recalculated correctly.
+
+Maintain sufficient information to identify important corrections, including the original value, corrected value, date, and reason when provided.
+
+Do not permit accidental permanent deletion of finalized bills or payment records.
+
+## 13. Dashboard
+
+Create a clean home dashboard showing:
+
+- Total active customers.
+- Today's meal-entry progress.
+- Quick access to breakfast and dinner recording.
+- Current month's total charges.
+- Payments received.
+- Outstanding balances.
+- Recently accessed customers.
+- Quick access to customer management, menu management, billing, reports, and settings.
+
+Use readable typography, clear monetary formatting, and simple navigation appropriate for everyday shop operations.
+
+## 14. PDF Bills and Data Export
+
+Generate printable and shareable customer bills as PDF files.
+
+Support exporting relevant customer histories and monthly summaries to CSV where practical.
+
+Include a local backup and restore mechanism for the shop's data.
+
+Backups should include the data required to restore customers, menu items, historical prices, meal entries, payments, adjustments, and billing records.
+
+Validate imported backups before replacing existing data. Never silently overwrite the shop's database during restoration.
+
+Core recordkeeping and bill generation must work offline. Sharing or printing a generated file may depend on the available device applications.
+
+## 15. Local Database Design
+
+Design separate models and repositories for:
+
+- ShopProfile.
+- Customer.
+- MenuItem.
+- MealEntry.
+- AdditionalItemEntry.
+- Payment.
+- Adjustment.
+- MonthlyBill or BillingPeriod.
+- AuditEntry, where appropriate.
+
+Use stable IDs, timestamps, and explicit relationships between records.
+
+Preserve historical unit prices in transaction records rather than calculating old charges from the current menu.
+
+Use a consistent schema and migration strategy so future changes do not make existing local data unreadable.
+
+Use Hive adapters and type IDs consistently. Handle database initialization, serialization, and errors properly.
+
+## 16. Offline-First Requirements
+
+- No login or network connection should be required for the initial single-device version.
+- Persist every successful change locally.
+- Ensure data survives application restarts.
+- Display understandable error messages when saving or restoring fails.
+- Avoid unnecessary database rewrites.
+- Keep business logic independent of Hive so a future database migration is possible.
+- Include backup and restore before considering the application production-ready.
+
+## 17. UI and UX Requirements
+
+Use a modern, professional Flutter interface designed for practical daily use.
+
+Prioritize speed and simplicity over decorative complexity.
+
+Recommended main navigation:
+
+1. Dashboard.
+2. Daily Entries.
+3. Customers.
+4. Bills and Payments.
+5. Menu and Settings.
+
+Use reusable widgets, consistent spacing, loading and empty states where appropriate, and confirmation dialogs for destructive actions.
+
+The daily-entry workflow should require as few taps as reasonably possible.
+
+## 18. Testing and Data Integrity
+
+Write unit tests for the billing engine and important database operations.
+
+At minimum, test:
+
+- A customer consuming both meals.
+- A customer consuming only one meal.
+- A customer skipping multiple days.
+- Multiple additional items with different quantities.
+- Menu price changes without changes to historical charges.
+- Editing and deleting incorrect entries.
+- Partial payments and outstanding balances.
+- Overpayments and customer credits.
+- Month-end totals.
+- Reopening and correcting finalized bills.
+- Persistence after application restart.
+- Backup and restore.
+- Inactive customers with historical balances.
+
+Verify that the same dataset always produces the same expected billing totals.
+
+## 19. Future Expansion
+
+Do not implement these features in the initial version, but avoid architectural decisions that would make them unnecessarily difficult:
+
+- Cloud backup and synchronization.
+- Multiple devices per shop.
+- Owner authentication and staff permissions.
+- Online bill delivery.
+- Multiple shops under one account.
+- Customer-facing bill access.
+- A directory or social platform for discovering local messes and food providers.
+
+## 20. Development Instructions
+
+Before writing code:
+
+1. Inspect the existing project and its dependencies.
+2. Propose the architecture, database schema, main screens, and billing rules.
+3. Identify ambiguous requirements and state reasonable assumptions.
+4. Divide development into small, testable phases.
+5. Implement the billing engine and data models before building the complete UI.
+6. Write and run tests for the billing logic.
+7. Implement the primary daily-entry workflow.
+8. Add customer management, menu management, monthly bills, payments, and exports.
+9. Test persistence, historical pricing, and backup/restore.
+10. Provide a summary of completed work, files changed, tests run, and remaining issues after each phase.
+
+Do not generate the entire application in one uncontrolled code-generation step. Build incrementally, verify the calculations, and maintain working code after every phase.
+
+The primary goal is a reliable, easy-to-use, fully offline billing tool that a real mess owner can trust with their customers' monthly accounts.
