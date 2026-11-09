@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'core/theme/app_theme.dart';
 import 'data/hive_init.dart';
+import 'data/repositories/shop_profile_repository.dart';
+import 'providers/shop_profile_provider.dart';
+import 'screens/onboarding/onboarding_screen.dart';
+import 'widgets/main_shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHive();
-  runApp(const MessBillingApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ShopProfileProvider(ShopProfileRepository()),
+        ),
+      ],
+      child: const MessBillingApp(),
+    ),
+  );
 }
 
 class MessBillingApp extends StatelessWidget {
@@ -15,38 +30,27 @@ class MessBillingApp extends StatelessWidget {
     return MaterialApp(
       title: 'Mess Billing Manager',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1565C0),
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.restaurant, size: 64, color: Color(0xFF1565C0)),
-              SizedBox(height: 16),
-              Text(
-                'Mess Billing Manager',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Module 1: Foundation Complete ✓',
-                style: TextStyle(color: Colors.green, fontSize: 16),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Module 2: UI Shell — coming next',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-      ),
+      theme: AppTheme.lightTheme,
+      home: const _AppRoot(),
     );
+  }
+}
+
+/// Decides whether to show [OnboardingScreen] or [MainShell] based on
+/// whether the shop profile has been set up.
+class _AppRoot extends StatelessWidget {
+  const _AppRoot();
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<ShopProfileProvider>();
+
+    if (provider.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return provider.isSetUp ? const MainShell() : const OnboardingScreen();
   }
 }

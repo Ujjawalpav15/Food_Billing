@@ -331,3 +331,7 @@ Before writing code:
 Do not generate the entire application in one uncontrolled code-generation step. Build incrementally, verify the calculations, and maintain working code after every phase.
 
 The primary goal is a reliable, easy-to-use, fully offline billing tool that a real mess owner can trust with their customers' monthly accounts.
+
+
+
+

@@ -23,6 +23,9 @@ class MoneyUtils {
   /// Convert paisa to rupees double for display/input.
   static double paisaToRupees(int paisa) => paisa / 100.0;
 
+  /// Alias for [formatNPR] — formats paisa as NPR string.
+  static String formatNprFromPaisa(int paisa) => formatNPR(paisa);
+
   /// Parse a user-entered rupees string to paisa. Returns null if invalid.
   static int? parseRupeesString(String input) {
     final trimmed = input.trim().replaceAll(',', '');
