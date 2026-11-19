@@ -11,9 +11,9 @@
 | # | Module | Description | Status |
 |---|--------|-------------|--------|
 | **M1** | Foundation & Data Layer | pubspec, Hive models, repositories, billing engine, unit tests | ✅ Complete |
-| **M2** | App Shell & Navigation | main.dart, theme, bottom nav, routing, app structure | 🔄 Next Up |
-| **M3** | Shop Settings & Onboarding | Owner profile, shop name, prices, logo, first-run setup | ⬜ Pending |
-| **M4** | Customer Management | Add/edit/deactivate customers, search, customer list screen | ⬜ Pending |
+| **M2** | App Shell & Navigation | main.dart, theme, bottom nav, routing, app structure | ✅ Complete |
+| **M3** | Shop Settings & Onboarding | Owner profile, shop name, prices, logo, first-run setup, profile edit | ✅ Complete |
+| **M4** | Customer Management | Add/edit/deactivate customers, search, customer list screen | 🔄 Next Up |
 | **M5** | Menu Management | Add/edit/deactivate menu items, categories, prices | ⬜ Pending |
 | **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | ⬜ Pending |
 | **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | ⬜ Pending |
@@ -139,7 +139,22 @@ lib/
 ---
 
 ## 📋 Module 2 — App Shell & Navigation
-_Pending Module 1 completion_
+- [x] Theme and AppRoutes configured
+- [x] MainShell bottom navigation (5 tabs) created
+- [x] Base placeholder screens created
+
+---
+
+## 📋 Module 3 — Shop Settings & Onboarding
+- [x] ShopProfileProvider state management
+- [x] 3-step OnboardingScreen with validation
+- [x] SettingsScreen displaying profile and default meal prices
+- [x] EditShopProfileScreen with full edit capabilities
+
+---
+
+## 📋 Module 4 — Customer Management
+_Next Up_
 
 ---
 
@@ -154,4 +169,6 @@ _Pending Module 1 completion_
 | 2026-11-06 | M1 | BillingEngine (pure Dart, no Hive) created |
 | 2026-11-06 | M1 | 29/29 unit tests passing ✅ |
 | 2026-11-06 | M1 | README.md written |
+| 2026-11-06 | M2 | App shell, navigation, themes, and route constants implemented |
+| 2026-11-09 | M3 | Shop profile provider, onboarding wizard, settings and profile editing implemented |
 
