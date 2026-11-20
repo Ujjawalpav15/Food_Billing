@@ -15,8 +15,8 @@
 | **M3** | Shop Settings & Onboarding | Owner profile, shop name, prices, logo, first-run setup, profile edit | ✅ Complete |
 | **M4** | Customer Management | Add/edit/deactivate customers, search, customer list screen | ✅ Complete |
 | **M5** | Menu Management | Add/edit/deactivate menu items, categories, prices | ✅ Complete |
-| **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | 🔄 Next Up |
-| **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | ⬜ Pending |
+| **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | ✅ Complete |
+| **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | 🔄 Next Up |
 | **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | ⬜ Pending |
 | **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ⬜ Pending |
 | **M10** | Dashboard | Summary stats, today's progress, quick actions | ⬜ Pending |
@@ -176,6 +176,16 @@ lib/
 ---
 
 ## 📋 Module 6 — Daily Meal Entry
+- [x] AdditionalItemEntryRepository enhanced with `getAllEntriesForDay`
+- [x] DailyEntryProvider state management (date navigation, meal toggles, bulk actions, extra items)
+- [x] MultiProvider updated in main.dart
+- [x] AddExtraItemsDialog modal sheet with live stepper, totals, and available menu items
+- [x] DailyEntryScreen with date navigation, daily summary statistics, bulk operations, and fast meal matrix
+- [x] Unit tests in daily_entry_test.dart
+
+---
+
+## 📋 Module 7 — Customer Ledger
 _Next Up_
 
 ---
@@ -195,4 +205,5 @@ _Next Up_
 | 2026-11-09 | M3 | Shop profile provider, onboarding wizard, settings and profile editing implemented |
 | 2026-11-20 | M4 | Customer provider, customer list with search/tabs, add/edit dialog, detail screen, and tests |
 | 2026-11-20 | M5 | Menu provider, category chips, add/edit modal, menu management screen, settings link, and tests |
+| 2026-11-20 | M6 | Daily entry provider, date picker, meal matrix, bulk actions, extras modal, and tests |
 

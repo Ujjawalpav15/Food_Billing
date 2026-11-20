@@ -46,5 +46,14 @@ class AdditionalItemEntryRepository {
         .toList();
   }
 
+  /// Get all additional item entries for all customers on a given day.
+  List<AdditionalItemEntry> getAllEntriesForDay(DateTime date) {
+    final dateOnly = DateTime(date.year, date.month, date.day);
+    return _box.values
+        .where((e) =>
+            DateTime(e.date.year, e.date.month, e.date.day) == dateOnly)
+        .toList();
+  }
+
   Stream<BoxEvent> watchAll() => _box.watch();
 }
