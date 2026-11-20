@@ -22,7 +22,7 @@ Mess owners in Nepal currently record student meals and extra purchases in noteb
 
 ## ✨ Features
 
-### ✅ Completed (Modules 1, 2, 3)
+### ✅ Completed (Modules 1, 2, 3, 4)
 - Offline-first local database using Hive CE
 - Complete data models with historical price preservation
 - Repository-based data access layer
@@ -30,12 +30,13 @@ Mess owners in Nepal currently record student meals and extra purchases in noteb
 - Unit tests for billing calculations
 - App shell, navigation, and theming (Module 2)
 - Shop setup, onboarding wizard, and settings profile management (Module 3)
+- Customer management: active/inactive tabs, live search, add/edit modal, details screen, and history-safe deactivation (Module 4)
 
 ### 🔄 In Progress
-- Customer management (Module 4)
+- Menu management with categories (Module 5)
 
 ### 📋 Planned
-- Menu management with categories (Module 5)
+- Daily meal recording (fast entry workflow) (Module 6)
 - Daily meal recording (fast entry workflow)
 - Customer ledger with date filters
 - Monthly bill generation and finalization
@@ -182,8 +183,8 @@ flutter test test/billing_engine_test.dart
 | M1 | Foundation & Data Layer | ✅ Complete |
 | M2 | App Shell & Navigation | ✅ Complete |
 | M3 | Shop Settings & Onboarding | ✅ Complete |
-| M4 | Customer Management | 🔄 In Progress |
-| M5 | Menu Management | ⬜ Pending |
+| M4 | Customer Management | ✅ Complete |
+| M5 | Menu Management | 🔄 In Progress |
 | M6 | Daily Meal Entry | ⬜ Pending |
 | M7 | Customer Ledger | ⬜ Pending |
 | M8 | Monthly Billing | ⬜ Pending |

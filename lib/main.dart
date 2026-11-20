@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'data/hive_init.dart';
+import 'data/repositories/customer_repository.dart';
 import 'data/repositories/shop_profile_repository.dart';
+import 'providers/customer_provider.dart';
 import 'providers/shop_profile_provider.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'widgets/main_shell.dart';
@@ -15,6 +17,9 @@ void main() async {
       providers: [
         ChangeNotifierProvider(
           create: (_) => ShopProfileProvider(ShopProfileRepository()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CustomerProvider(CustomerRepository()),
         ),
       ],
       child: const MessBillingApp(),

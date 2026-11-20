@@ -56,6 +56,41 @@ class CustomerRepository {
     }
   }
 
+  /// Check whether the customer has any recorded meal entries, extra items,
+  /// payments, or monthly bills. Used to enforce that customers with historical
+  /// data are never permanently deleted (requirement 5).
+  bool hasHistory(String customerId) {
+    if (Hive.isBoxOpen(AppConstants.mealEntryBox)) {
+      final mealBox = Hive.box<MealEntry>(AppConstants.mealEntryBox);
+      if (mealBox.values.any((e) => e.customerId == customerId)) return true;
+    }
+    if (Hive.isBoxOpen(AppConstants.additionalItemEntryBox)) {
+      final extraBox =
+          Hive.box<AdditionalItemEntry>(AppConstants.additionalItemEntryBox);
+      if (extraBox.values.any((e) => e.customerId == customerId)) return true;
+    }
+    if (Hive.isBoxOpen(AppConstants.paymentBox)) {
+      final paymentBox = Hive.box<Payment>(AppConstants.paymentBox);
+      if (paymentBox.values.any((p) => p.customerId == customerId)) return true;
+    }
+    if (Hive.isBoxOpen(AppConstants.monthlyBillBox)) {
+      final billBox = Hive.box<MonthlyBill>(AppConstants.monthlyBillBox);
+      if (billBox.values.any((b) => b.customerId == customerId)) return true;
+    }
+    return false;
+  }
+
+  /// Permanently delete a customer ONLY if they have no historical transactions.
+  /// Throws [StateError] if historical records exist.
+  Future<void> deleteCustomer(String id) async {
+    if (hasHistory(id)) {
+      throw StateError(
+        'Cannot delete customer with existing historical records. Deactivate instead.',
+      );
+    }
+    await _box.delete(id);
+  }
+
   /// Watch for changes to the customer box.
   Stream<BoxEvent> watchAll() => _box.watch();
 }
