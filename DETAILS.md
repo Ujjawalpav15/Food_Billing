@@ -14,8 +14,8 @@
 | **M2** | App Shell & Navigation | main.dart, theme, bottom nav, routing, app structure | ✅ Complete |
 | **M3** | Shop Settings & Onboarding | Owner profile, shop name, prices, logo, first-run setup, profile edit | ✅ Complete |
 | **M4** | Customer Management | Add/edit/deactivate customers, search, customer list screen | ✅ Complete |
-| **M5** | Menu Management | Add/edit/deactivate menu items, categories, prices | 🔄 Next Up |
-| **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | ⬜ Pending |
+| **M5** | Menu Management | Add/edit/deactivate menu items, categories, prices | ✅ Complete |
+| **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | 🔄 Next Up |
 | **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | ⬜ Pending |
 | **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | ⬜ Pending |
 | **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ⬜ Pending |
@@ -165,6 +165,17 @@ lib/
 ---
 
 ## 📋 Module 5 — Menu Management
+- [x] MenuItemRepository with `hasHistory`, `deleteMenuItem`, and `seedDefaultsIfEmpty`
+- [x] MenuItemProvider state management (category filters, search, active/inactive lists)
+- [x] MultiProvider registered in main.dart
+- [x] AddEditMenuItemDialog modal sheet with categories, prices in NPR, and unit suggestions
+- [x] MenuScreen with Category filter chips, Active/Inactive tabs, and item cards
+- [x] Menu navigation tile in SettingsScreen
+- [x] Unit tests in menu_management_test.dart
+
+---
+
+## 📋 Module 6 — Daily Meal Entry
 _Next Up_
 
 ---
@@ -183,4 +194,5 @@ _Next Up_
 | 2026-11-06 | M2 | App shell, navigation, themes, and route constants implemented |
 | 2026-11-09 | M3 | Shop profile provider, onboarding wizard, settings and profile editing implemented |
 | 2026-11-20 | M4 | Customer provider, customer list with search/tabs, add/edit dialog, detail screen, and tests |
+| 2026-11-20 | M5 | Menu provider, category chips, add/edit modal, menu management screen, settings link, and tests |
 

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/money_utils.dart';
 import '../../providers/shop_profile_provider.dart';
+import '../menu/menu_screen.dart';
 import 'edit_shop_profile_screen.dart';
 
 /// Settings screen — shows shop info and links to editing sub-screens.
@@ -111,6 +112,29 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ),
+
+          // ── Menu & Additional Items ───────────────────────────────────
+          _SectionHeader(label: 'Menu & Additional Items'),
+          Card(
+            child: ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withAlpha(20),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.restaurant_menu,
+                    color: AppColors.primary),
+              ),
+              title: const Text('Manage Menu Items & Prices'),
+              subtitle:
+                  const Text('Extra items like eggs, curd, tea, milk & snacks'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(MenuScreen.route());
+              },
             ),
           ),
 

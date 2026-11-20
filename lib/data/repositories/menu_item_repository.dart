@@ -44,5 +44,93 @@ class MenuItemRepository {
     }
   }
 
+  /// Check whether this menu item has any recorded extra-item orders.
+  bool hasHistory(String menuItemId) {
+    if (Hive.isBoxOpen(AppConstants.additionalItemEntryBox)) {
+      final extraBox =
+          Hive.box<AdditionalItemEntry>(AppConstants.additionalItemEntryBox);
+      return extraBox.values.any((e) => e.menuItemId == menuItemId);
+    }
+    return false;
+  }
+
+  /// Permanently delete a menu item ONLY if it has never been ordered.
+  /// Throws [StateError] if historical order records exist.
+  Future<void> deleteMenuItem(String id) async {
+    if (hasHistory(id)) {
+      throw StateError(
+        'Cannot delete menu item with existing order records. Deactivate instead.',
+      );
+    }
+    await _box.delete(id);
+  }
+
+  /// Seeds popular Nepali mess menu items if the box is currently empty.
+  Future<void> seedDefaultsIfEmpty() async {
+    if (_box.isNotEmpty) return;
+
+    final now = DateTime.now();
+    final defaultItems = [
+      MenuItem(
+        id: 'default_tea',
+        name: 'Tea / Chiya',
+        category: MenuCategory.beverage,
+        unit: 'cup',
+        pricePaisa: 2000, // Rs. 20
+        createdAt: now,
+        updatedAt: now,
+      ),
+      MenuItem(
+        id: 'default_boiled_egg',
+        name: 'Boiled Egg',
+        category: MenuCategory.extra,
+        unit: 'piece',
+        pricePaisa: 3000, // Rs. 30
+        createdAt: now,
+        updatedAt: now,
+      ),
+      MenuItem(
+        id: 'default_egg_omelette',
+        name: 'Egg Omelette',
+        category: MenuCategory.extra,
+        unit: 'piece',
+        pricePaisa: 4000, // Rs. 40
+        createdAt: now,
+        updatedAt: now,
+      ),
+      MenuItem(
+        id: 'default_curd',
+        name: 'Curd / Dahi',
+        category: MenuCategory.dairy,
+        unit: 'cup',
+        pricePaisa: 3500, // Rs. 35
+        createdAt: now,
+        updatedAt: now,
+      ),
+      MenuItem(
+        id: 'default_milk',
+        name: 'Milk / Dudh',
+        category: MenuCategory.dairy,
+        unit: 'glass',
+        pricePaisa: 4000, // Rs. 40
+        createdAt: now,
+        updatedAt: now,
+      ),
+      MenuItem(
+        id: 'default_chicken_curry',
+        name: 'Chicken Curry',
+        category: MenuCategory.extra,
+        unit: 'plate',
+        pricePaisa: 15000, // Rs. 150
+        createdAt: now,
+        updatedAt: now,
+      ),
+    ];
+
+    for (final item in defaultItems) {
+      await _box.put(item.id, item);
+    }
+  }
+
   Stream<BoxEvent> watchAll() => _box.watch();
 }

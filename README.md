@@ -22,7 +22,7 @@ Mess owners in Nepal currently record student meals and extra purchases in noteb
 
 ## ✨ Features
 
-### ✅ Completed (Modules 1, 2, 3, 4)
+### ✅ Completed (Modules 1, 2, 3, 4, 5)
 - Offline-first local database using Hive CE
 - Complete data models with historical price preservation
 - Repository-based data access layer
@@ -31,18 +31,18 @@ Mess owners in Nepal currently record student meals and extra purchases in noteb
 - App shell, navigation, and theming (Module 2)
 - Shop setup, onboarding wizard, and settings profile management (Module 3)
 - Customer management: active/inactive tabs, live search, add/edit modal, details screen, and history-safe deactivation (Module 4)
+- Menu management: categories, units, price configuration in NPR/Paisa, default seeds, and order-safe deactivation (Module 5)
 
 ### 🔄 In Progress
-- Menu management with categories (Module 5)
+- Daily meal recording matrix & fast entry workflow (Module 6)
 
 ### 📋 Planned
-- Daily meal recording (fast entry workflow) (Module 6)
-- Daily meal recording (fast entry workflow)
-- Customer ledger with date filters
-- Monthly bill generation and finalization
-- Payment recording (partial, full, overpayment → credit)
-- Dashboard with daily progress
-- PDF bill generation & sharing
+- Customer ledger with date filters (Module 7)
+- Monthly bill generation and finalization (Module 8)
+- Payment recording (partial, full, overpayment → credit) (Module 9)
+- Dashboard with daily progress (Module 10)
+- PDF bill generation & sharing (Module 11)
+- Local backup & restore (Module 12)
 - CSV export
 - Local backup & restore
 
@@ -184,8 +184,8 @@ flutter test test/billing_engine_test.dart
 | M2 | App Shell & Navigation | ✅ Complete |
 | M3 | Shop Settings & Onboarding | ✅ Complete |
 | M4 | Customer Management | ✅ Complete |
-| M5 | Menu Management | 🔄 In Progress |
-| M6 | Daily Meal Entry | ⬜ Pending |
+| M5 | Menu Management | ✅ Complete |
+| M6 | Daily Meal Entry | 🔄 In Progress |
 | M7 | Customer Ledger | ⬜ Pending |
 | M8 | Monthly Billing | ⬜ Pending |
 | M9 | Payment Management | ⬜ Pending |
