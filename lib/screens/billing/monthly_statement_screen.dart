@@ -3,11 +3,18 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/money_utils.dart';
+import '../../data/models/additional_item_entry.dart';
+import '../../data/models/adjustment.dart';
 import '../../data/models/customer.dart';
 import '../../data/models/monthly_bill.dart';
+import '../../data/models/payment.dart';
+import '../../data/models/shop_profile.dart';
 import '../../providers/monthly_bill_provider.dart';
 import '../../providers/shop_profile_provider.dart';
+import '../../services/csv_export_service.dart';
+import '../../services/pdf_service.dart';
 import '../ledger/customer_ledger_screen.dart';
+import 'pdf_preview_screen.dart';
 
 class MonthlyStatementScreen extends StatelessWidget {
   final Customer customer;
@@ -102,6 +109,84 @@ class MonthlyStatementScreen extends StatelessWidget {
     );
   }
 
+  void _openPdfPreview(
+    BuildContext context,
+    ShopProfile? shop,
+    MonthlyBill currentBill,
+    List<AdditionalItemEntry> extraItems,
+    List<Adjustment> adjustments,
+    List<Payment> payments,
+  ) {
+    final fileName = 'Statement_${customer.name.replaceAll(' ', '_')}_${currentBill.billingYear}_${currentBill.billingMonth}.pdf';
+    Navigator.of(context).push(
+      PdfPreviewScreen.route(
+        title: 'Bill: ${customer.name}',
+        fileName: fileName,
+        pdfDataBuilder: () => const PdfService().generateMonthlyBillPdf(
+          shop: shop,
+          customer: customer,
+          bill: currentBill,
+          extraItems: extraItems,
+          adjustments: adjustments,
+          payments: payments,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _sharePdf(
+    BuildContext context,
+    ShopProfile? shop,
+    MonthlyBill currentBill,
+    List<AdditionalItemEntry> extraItems,
+    List<Adjustment> adjustments,
+    List<Payment> payments,
+  ) async {
+    try {
+      final fileName = 'Statement_${customer.name.replaceAll(' ', '_')}_${currentBill.billingYear}_${currentBill.billingMonth}.pdf';
+      final bytes = await const PdfService().generateMonthlyBillPdf(
+        shop: shop,
+        customer: customer,
+        bill: currentBill,
+        extraItems: extraItems,
+        adjustments: adjustments,
+        payments: payments,
+      );
+      await const PdfService().sharePdf(bytes: bytes, filename: fileName);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to share PDF: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _exportCsv(
+    BuildContext context,
+    CustomerBillSummary summary,
+  ) async {
+    try {
+      final csvContent = const CsvExportService().generateMonthlyBillsCsv(
+        summaries: [summary],
+        year: summary.bill.billingYear,
+        month: summary.bill.billingMonth,
+      );
+      final fileName = 'Bill_${customer.name.replaceAll(' ', '_')}_${summary.bill.billingYear}_${summary.bill.billingMonth}.csv';
+      await const CsvExportService().shareCsv(
+        csvContent: csvContent,
+        fileName: fileName,
+        subject: 'Monthly Bill Statement - ${customer.name}',
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to export CSV: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final billProvider = context.watch<MonthlyBillProvider>();
@@ -128,11 +213,47 @@ class MonthlyStatementScreen extends StatelessWidget {
         title: Text('${customer.name} — $monthStr'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.menu_book_outlined),
-            tooltip: 'View Ledger',
-            onPressed: () {
-              Navigator.of(context).push(CustomerLedgerScreen.route(customer));
+            icon: const Icon(Icons.print_outlined),
+            tooltip: 'Print / Preview PDF',
+            onPressed: () => _openPdfPreview(context, shop, currentBill, extraItems, adjustments, payments),
+          ),
+          IconButton(
+            icon: const Icon(Icons.share_outlined),
+            tooltip: 'Share PDF',
+            onPressed: () => _sharePdf(context, shop, currentBill, extraItems, adjustments, payments),
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            tooltip: 'More actions',
+            onSelected: (val) {
+              if (val == 'ledger') {
+                Navigator.of(context).push(CustomerLedgerScreen.route(customer));
+              } else if (val == 'csv') {
+                _exportCsv(context, currentSummary);
+              }
             },
+            itemBuilder: (ctx) => [
+              const PopupMenuItem(
+                value: 'csv',
+                child: Row(
+                  children: [
+                    Icon(Icons.table_chart_outlined, size: 20),
+                    SizedBox(width: 8),
+                    Text('Export CSV'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'ledger',
+                child: Row(
+                  children: [
+                    Icon(Icons.menu_book_outlined, size: 20),
+                    SizedBox(width: 8),
+                    Text('View Ledger'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -373,7 +494,29 @@ class MonthlyStatementScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // ── Actions ───────────────────────────────────────────────────
+          // ── Export & Print Actions ────────────────────────────────────
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.print_outlined),
+                  label: const Text('Preview / Print'),
+                  onPressed: () => _openPdfPreview(context, shop, currentBill, extraItems, adjustments, payments),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.share_outlined),
+                  label: const Text('Share PDF'),
+                  onPressed: () => _sharePdf(context, shop, currentBill, extraItems, adjustments, payments),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // ── Status Lock Actions ────────────────────────────────────────
           if (isFinalized)
             OutlinedButton.icon(
               icon: const Icon(Icons.lock_open, color: AppColors.warning),

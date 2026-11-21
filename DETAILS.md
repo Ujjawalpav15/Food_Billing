@@ -20,8 +20,8 @@
 | **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | ✅ Complete |
 | **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ✅ Complete |
 | **M10** | Dashboard | Summary stats, today's progress, quick actions | ✅ Complete |
-| **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | 🔄 Next Up |
-| **M12** | Backup & Restore | Local backup to file, restore with validation | ⬜ Pending |
+| **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | ✅ Complete |
+| **M12** | Backup & Restore | Local backup to file, restore with validation | 🔄 Next Up |
 
 ---
 
@@ -224,6 +224,19 @@ lib/
 ---
 
 ## 📋 Module 11 — PDF & Export
+- [x] PdfService with printable, itemized customer monthly bill statement PDF (Shop header, logo, customer details, meals, extra items, previous balance, payments, total due)
+- [x] Customer transaction ledger PDF generation with running balance & period filtering
+- [x] Direct print preview with `PdfPreviewScreen` powered by `printing` package
+- [x] System share integration for WhatsApp, email, Drive via `Printing.sharePdf` & `share_plus`
+- [x] CsvExportService: RFC 4180 CSV generation for monthly bills summaries, customer ledger, and sharing
+- [x] UI Actions in MonthlyStatementScreen (Preview, Print, Share, Export CSV)
+- [x] UI Actions in CustomerLedgerScreen (Preview, Print, Share, Export CSV)
+- [x] UI Actions in BillingScreen (Export All Monthly Bills CSV)
+- [x] Unit & integration tests in pdf_export_test.dart
+
+---
+
+## 📋 Module 12 — Backup & Restore
 _Next Up_
 
 ---
@@ -248,4 +261,5 @@ _Next Up_
 | 2026-11-21 | M8 | Monthly billing provider, customer statements, finalizing/reopening, billing screen, and tests |
 | 2026-11-21 | M9 | Payment provider, record payment modal, payments collection screen, overpayment credit, and tests |
 | 2026-11-21 | M10 | Dashboard screen, financial hero card, today's attendance progress, quick actions grid, top dues, and tests |
+| 2026-11-21 | M11 | PDF statement generation, interactive preview, direct printing, WhatsApp share, CSV export, and tests |
 

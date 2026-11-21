@@ -9,6 +9,10 @@ import '../../data/repositories/adjustment_repository.dart';
 import '../../data/repositories/meal_entry_repository.dart';
 import '../../data/repositories/payment_repository.dart';
 import '../../providers/customer_ledger_provider.dart';
+import '../../providers/shop_profile_provider.dart';
+import '../../services/csv_export_service.dart';
+import '../../services/pdf_service.dart';
+import '../billing/pdf_preview_screen.dart';
 
 class CustomerLedgerScreen extends StatelessWidget {
   final Customer customer;
@@ -129,6 +133,87 @@ class _CustomerLedgerView extends StatelessWidget {
     );
   }
 
+  void _openPdfPreview(
+    BuildContext context,
+    CustomerLedgerProvider provider,
+    String periodTitle,
+  ) {
+    final shop = context.read<ShopProfileProvider?>()?.shopProfile;
+    final items = provider.filteredItems;
+    final balancePaisa = provider.totalOutstandingBalancePaisa;
+    final fileName = 'Ledger_${customer.name.replaceAll(' ', '_')}.pdf';
+
+    Navigator.of(context).push(
+      PdfPreviewScreen.route(
+        title: 'Ledger: ${customer.name}',
+        fileName: fileName,
+        pdfDataBuilder: () => const PdfService().generateCustomerLedgerPdf(
+          shop: shop,
+          customer: customer,
+          items: items,
+          currentBalancePaisa: balancePaisa,
+          periodDescription: periodTitle,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _sharePdf(
+    BuildContext context,
+    CustomerLedgerProvider provider,
+    String periodTitle,
+  ) async {
+    final shop = context.read<ShopProfileProvider?>()?.shopProfile;
+    final items = provider.filteredItems;
+    final balancePaisa = provider.totalOutstandingBalancePaisa;
+    final fileName = 'Ledger_${customer.name.replaceAll(' ', '_')}.pdf';
+
+    try {
+      final bytes = await const PdfService().generateCustomerLedgerPdf(
+        shop: shop,
+        customer: customer,
+        items: items,
+        currentBalancePaisa: balancePaisa,
+        periodDescription: periodTitle,
+      );
+      await const PdfService().sharePdf(bytes: bytes, filename: fileName);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to share PDF: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _exportCsv(
+    BuildContext context,
+    CustomerLedgerProvider provider,
+  ) async {
+    final items = provider.filteredItems;
+    final balancePaisa = provider.totalOutstandingBalancePaisa;
+    final fileName = 'Ledger_${customer.name.replaceAll(' ', '_')}.csv';
+
+    try {
+      final csv = const CsvExportService().generateCustomerLedgerCsv(
+        customer: customer,
+        items: items,
+        closingBalancePaisa: balancePaisa,
+      );
+      await const CsvExportService().shareCsv(
+        csvContent: csv,
+        fileName: fileName,
+        subject: 'Customer Ledger - ${customer.name}',
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to export CSV: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CustomerLedgerProvider>();
@@ -150,14 +235,59 @@ class _CustomerLedgerView extends StatelessWidget {
         title: Text('${customer.name}’s Ledger'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
-            tooltip: 'Filter period',
-            onPressed: () => _showFilterDialog(context, provider),
+            icon: const Icon(Icons.print_outlined),
+            tooltip: 'Preview / Print PDF',
+            onPressed: () => _openPdfPreview(context, provider, periodTitle),
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Reload',
-            onPressed: provider.loadLedger,
+            icon: const Icon(Icons.share_outlined),
+            tooltip: 'Share PDF',
+            onPressed: () => _sharePdf(context, provider, periodTitle),
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            tooltip: 'More actions',
+            onSelected: (val) {
+              if (val == 'csv') {
+                _exportCsv(context, provider);
+              } else if (val == 'filter') {
+                _showFilterDialog(context, provider);
+              } else if (val == 'reload') {
+                provider.loadLedger();
+              }
+            },
+            itemBuilder: (ctx) => [
+              const PopupMenuItem(
+                value: 'csv',
+                child: Row(
+                  children: [
+                    Icon(Icons.table_chart_outlined, size: 20),
+                    SizedBox(width: 8),
+                    Text('Export CSV'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'filter',
+                child: Row(
+                  children: [
+                    Icon(Icons.filter_list, size: 20),
+                    SizedBox(width: 8),
+                    Text('Filter Period'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'reload',
+                child: Row(
+                  children: [
+                    Icon(Icons.refresh, size: 20),
+                    SizedBox(width: 8),
+                    Text('Reload'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/utils/money_utils.dart';
 import '../../data/models/monthly_bill.dart';
 import '../../providers/monthly_bill_provider.dart';
+import '../../services/csv_export_service.dart';
 import '../ledger/customer_ledger_screen.dart';
 import 'monthly_statement_screen.dart';
 
@@ -57,6 +58,42 @@ class _BillingScreenState extends State<BillingScreen> {
     );
   }
 
+  Future<void> _exportAllCsv(BuildContext context, MonthlyBillProvider provider) async {
+    final summaries = provider.allSummaries;
+    if (summaries.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No customer monthly bills to export for this month.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final csvContent = const CsvExportService().generateMonthlyBillsCsv(
+        summaries: summaries,
+        year: provider.selectedYear,
+        month: provider.selectedMonth,
+      );
+      final fileName = 'All_Bills_${provider.selectedYear}_${provider.selectedMonth}.csv';
+      await const CsvExportService().shareCsv(
+        csvContent: csvContent,
+        fileName: fileName,
+        subject: 'Monthly Bills Summary - ${provider.selectedYear}/${provider.selectedMonth}',
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to export CSV: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<MonthlyBillProvider>();
@@ -69,6 +106,11 @@ class _BillingScreenState extends State<BillingScreen> {
       appBar: AppBar(
         title: const Text('Monthly Billing'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.file_download_outlined),
+            tooltip: 'Export CSV',
+            onPressed: () => _exportAllCsv(context, provider),
+          ),
           IconButton(
             icon: const Icon(Icons.playlist_add_check),
             tooltip: 'Generate All Bills',
