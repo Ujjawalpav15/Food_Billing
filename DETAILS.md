@@ -16,8 +16,8 @@
 | **M4** | Customer Management | Add/edit/deactivate customers, search, customer list screen | ✅ Complete |
 | **M5** | Menu Management | Add/edit/deactivate menu items, categories, prices | ✅ Complete |
 | **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | ✅ Complete |
-| **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | 🔄 Next Up |
-| **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | ⬜ Pending |
+| **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | ✅ Complete |
+| **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | 🔄 Next Up |
 | **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ⬜ Pending |
 | **M10** | Dashboard | Summary stats, today's progress, quick actions | ⬜ Pending |
 | **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | ⬜ Pending |
@@ -186,6 +186,15 @@ lib/
 ---
 
 ## 📋 Module 7 — Customer Ledger
+- [x] Unified LedgerItem model with charges, payments, and running balances
+- [x] CustomerLedgerProvider state management (all-time vs month vs date range filters)
+- [x] CustomerLedgerScreen with period selector, balance highlight, attendance stats, and itemized cards
+- [x] Direct navigation linked from CustomerDetailScreen and CustomersScreen
+- [x] Unit tests in customer_ledger_test.dart
+
+---
+
+## 📋 Module 8 — Monthly Billing
 _Next Up_
 
 ---
@@ -206,4 +215,5 @@ _Next Up_
 | 2026-11-20 | M4 | Customer provider, customer list with search/tabs, add/edit dialog, detail screen, and tests |
 | 2026-11-20 | M5 | Menu provider, category chips, add/edit modal, menu management screen, settings link, and tests |
 | 2026-11-20 | M6 | Daily entry provider, date picker, meal matrix, bulk actions, extras modal, and tests |
+| 2026-11-21 | M7 | Customer ledger provider, running balance, month & date range filters, ledger screen, and tests |
 

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/customer.dart';
 import '../../providers/customer_provider.dart';
+import '../ledger/customer_ledger_screen.dart';
 import 'add_edit_customer_dialog.dart';
 import 'customer_detail_screen.dart';
 
@@ -353,6 +354,10 @@ class _CustomerListView extends StatelessWidget {
                           Navigator.of(context).push(
                             CustomerDetailScreen.route(customer.id),
                           );
+                        } else if (action == 'ledger') {
+                          Navigator.of(context).push(
+                            CustomerLedgerScreen.route(customer),
+                          );
                         } else if (action == 'edit') {
                           AddEditCustomerDialog.show(
                             context,
@@ -370,6 +375,17 @@ class _CustomerListView extends StatelessWidget {
                               Icon(Icons.visibility_outlined, size: 18),
                               SizedBox(width: 10),
                               Text('View Profile'),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'ledger',
+                          child: Row(
+                            children: [
+                              Icon(Icons.menu_book_outlined,
+                                  size: 18, color: AppColors.primary),
+                              SizedBox(width: 10),
+                              Text('View Ledger'),
                             ],
                           ),
                         ),

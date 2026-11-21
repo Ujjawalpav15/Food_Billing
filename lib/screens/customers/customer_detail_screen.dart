@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/customer_provider.dart';
+import '../ledger/customer_ledger_screen.dart';
 import 'add_edit_customer_dialog.dart';
 
 class CustomerDetailScreen extends StatelessWidget {
@@ -420,11 +421,8 @@ class CustomerDetailScreen extends StatelessWidget {
                     subtitle: const Text('View meal history, balance, bills'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Ledger view coming in Module 7'),
-                          behavior: SnackBarBehavior.floating,
-                        ),
+                      Navigator.of(context).push(
+                        CustomerLedgerScreen.route(customer),
                       );
                     },
                   ),
