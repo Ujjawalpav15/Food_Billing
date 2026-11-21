@@ -19,8 +19,8 @@
 | **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | ✅ Complete |
 | **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | ✅ Complete |
 | **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ✅ Complete |
-| **M10** | Dashboard | Summary stats, today's progress, quick actions | 🔄 Next Up |
-| **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | ⬜ Pending |
+| **M10** | Dashboard | Summary stats, today's progress, quick actions | ✅ Complete |
+| **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | 🔄 Next Up |
 | **M12** | Backup & Restore | Local backup to file, restore with validation | ⬜ Pending |
 
 ---
@@ -214,6 +214,16 @@ lib/
 ---
 
 ## 📋 Module 10 — Dashboard
+- [x] High-level financial overview card (Total market due, month billed, total collected)
+- [x] Today's meal attendance progress bar & summary pills (Breakfast, Dinner, Extras)
+- [x] Quick actions grid with instant bottom tab navigation (Daily Meals, New Customer, Record Pay, Menu & Rates)
+- [x] Top pending customer dues list with 1-tap payment shortcut
+- [x] MainShell integration with tab switching callbacks
+- [x] Widget tests in dashboard_test.dart
+
+---
+
+## 📋 Module 11 — PDF & Export
 _Next Up_
 
 ---
@@ -237,4 +247,5 @@ _Next Up_
 | 2026-11-21 | M7 | Customer ledger provider, running balance, month & date range filters, ledger screen, and tests |
 | 2026-11-21 | M8 | Monthly billing provider, customer statements, finalizing/reopening, billing screen, and tests |
 | 2026-11-21 | M9 | Payment provider, record payment modal, payments collection screen, overpayment credit, and tests |
+| 2026-11-21 | M10 | Dashboard screen, financial hero card, today's attendance progress, quick actions grid, top dues, and tests |
 

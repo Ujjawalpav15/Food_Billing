@@ -45,20 +45,24 @@ class _MainShellState extends State<MainShell> {
     ),
   ];
 
-  static const _screens = [
-    DashboardScreen(),
-    DailyEntryScreen(),
-    CustomersScreen(),
-    BillingScreen(),
-    SettingsScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final screens = [
+      DashboardScreen(
+        onNavigateToTab: (index) {
+          setState(() => _selectedIndex = index);
+        },
+      ),
+      const DailyEntryScreen(),
+      const CustomersScreen(),
+      const BillingScreen(),
+      const SettingsScreen(),
+    ];
+
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _screens,
+        children: screens,
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
