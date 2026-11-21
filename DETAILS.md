@@ -18,8 +18,8 @@
 | **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | ✅ Complete |
 | **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | ✅ Complete |
 | **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | ✅ Complete |
-| **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | 🔄 Next Up |
-| **M10** | Dashboard | Summary stats, today's progress, quick actions | ⬜ Pending |
+| **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ✅ Complete |
+| **M10** | Dashboard | Summary stats, today's progress, quick actions | 🔄 Next Up |
 | **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | ⬜ Pending |
 | **M12** | Backup & Restore | Local backup to file, restore with validation | ⬜ Pending |
 
@@ -204,6 +204,16 @@ lib/
 ---
 
 ## 📋 Module 9 — Payment Management
+- [x] PaymentRepository enhanced with `getAllPayments` and `getAllPaymentsForMonth`
+- [x] PaymentProvider with balance computation, partial/full/overpayment handling, and voiding
+- [x] RecordPaymentDialog with customer balance preview, quick chips, and overpayment store credit notification
+- [x] PaymentsScreen with collection summaries, method breakdown, and audit-safe voiding
+- [x] Linked from CustomerDetailScreen, SettingsScreen, and MultiProvider
+- [x] Unit tests in payment_management_test.dart
+
+---
+
+## 📋 Module 10 — Dashboard
 _Next Up_
 
 ---
@@ -226,4 +236,5 @@ _Next Up_
 | 2026-11-20 | M6 | Daily entry provider, date picker, meal matrix, bulk actions, extras modal, and tests |
 | 2026-11-21 | M7 | Customer ledger provider, running balance, month & date range filters, ledger screen, and tests |
 | 2026-11-21 | M8 | Monthly billing provider, customer statements, finalizing/reopening, billing screen, and tests |
+| 2026-11-21 | M9 | Payment provider, record payment modal, payments collection screen, overpayment credit, and tests |
 

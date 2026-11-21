@@ -50,5 +50,20 @@ class PaymentRepository {
         .fold(0, (sum, p) => sum + p.amountPaisa);
   }
 
+  /// Get all payments across all customers (newest first).
+  List<Payment> getAllPayments() =>
+      _box.values.where((p) => !p.isVoided).toList()
+        ..sort((a, b) => b.paymentDate.compareTo(a.paymentDate));
+
+  /// Get all payments across all customers for a specific month.
+  List<Payment> getAllPaymentsForMonth(int year, int month) =>
+      _box.values
+          .where((p) =>
+              !p.isVoided &&
+              p.paymentDate.year == year &&
+              p.paymentDate.month == month)
+          .toList()
+        ..sort((a, b) => b.paymentDate.compareTo(a.paymentDate));
+
   Stream<BoxEvent> watchAll() => _box.watch();
 }

@@ -14,6 +14,7 @@ import 'providers/customer_provider.dart';
 import 'providers/daily_entry_provider.dart';
 import 'providers/menu_item_provider.dart';
 import 'providers/monthly_bill_provider.dart';
+import 'providers/payment_provider.dart';
 import 'providers/shop_profile_provider.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'widgets/main_shell.dart';
@@ -59,6 +60,15 @@ void main() async {
             paymentRepo: paymentRepo,
             customerRepo: customerRepo,
             shopRepo: shopRepo,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PaymentProvider(
+            paymentRepo: paymentRepo,
+            customerRepo: customerRepo,
+            mealRepo: mealRepo,
+            extraRepo: extraRepo,
+            adjustmentRepo: adjustmentRepo,
           ),
         ),
       ],

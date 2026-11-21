@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/customer_provider.dart';
 import '../ledger/customer_ledger_screen.dart';
+import '../payments/record_payment_dialog.dart';
 import 'add_edit_customer_dialog.dart';
 
 class CustomerDetailScreen extends StatelessWidget {
@@ -441,12 +442,7 @@ class CustomerDetailScreen extends StatelessWidget {
                     subtitle: const Text('Log partial, full, or advance cash'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Payment recording coming in Module 9'),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
+                      RecordPaymentDialog.show(context, customer: customer);
                     },
                   ),
                 ],

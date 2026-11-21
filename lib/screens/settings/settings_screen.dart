@@ -7,6 +7,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/utils/money_utils.dart';
 import '../../providers/shop_profile_provider.dart';
 import '../menu/menu_screen.dart';
+import '../payments/payments_screen.dart';
 import 'edit_shop_profile_screen.dart';
 
 /// Settings screen — shows shop info and links to editing sub-screens.
@@ -134,6 +135,29 @@ class SettingsScreen extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(MenuScreen.route());
+              },
+            ),
+          ),
+
+          // ── Payments & Transactions ───────────────────────────────────
+          _SectionHeader(label: 'Transactions'),
+          Card(
+            child: ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.success.withAlpha(20),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.payments_outlined,
+                    color: AppColors.success),
+              ),
+              title: const Text('Payments & Collections History'),
+              subtitle:
+                  const Text('View all cash and digital payments received'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(PaymentsScreen.route());
               },
             ),
           ),
