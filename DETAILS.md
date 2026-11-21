@@ -17,8 +17,8 @@
 | **M5** | Menu Management | Add/edit/deactivate menu items, categories, prices | ✅ Complete |
 | **M6** | Daily Meal Entry | Date picker, quick meal recording per customer, corrections | ✅ Complete |
 | **M7** | Customer Ledger | Itemized ledger per customer, date filters, balance view | ✅ Complete |
-| **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | 🔄 Next Up |
-| **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ⬜ Pending |
+| **M8** | Monthly Billing | Generate statements, finalize bills, reopen/amend bills | ✅ Complete |
+| **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | 🔄 Next Up |
 | **M10** | Dashboard | Summary stats, today's progress, quick actions | ⬜ Pending |
 | **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | ⬜ Pending |
 | **M12** | Backup & Restore | Local backup to file, restore with validation | ⬜ Pending |
@@ -195,6 +195,15 @@ lib/
 ---
 
 ## 📋 Module 8 — Monthly Billing
+- [x] MonthlyBillProvider with previous balance carryover, calculations, and locked snapshots
+- [x] MonthlyStatementScreen with itemized meals, extras, adjustments, balances, and finalize/reopen actions
+- [x] BillingScreen with shop-wide summary cards, status filters, search, and bulk bill generation
+- [x] Registered in MultiProvider in main.dart
+- [x] Unit tests in monthly_billing_test.dart
+
+---
+
+## 📋 Module 9 — Payment Management
 _Next Up_
 
 ---
@@ -216,4 +225,5 @@ _Next Up_
 | 2026-11-20 | M5 | Menu provider, category chips, add/edit modal, menu management screen, settings link, and tests |
 | 2026-11-20 | M6 | Daily entry provider, date picker, meal matrix, bulk actions, extras modal, and tests |
 | 2026-11-21 | M7 | Customer ledger provider, running balance, month & date range filters, ledger screen, and tests |
+| 2026-11-21 | M8 | Monthly billing provider, customer statements, finalizing/reopening, billing screen, and tests |
 

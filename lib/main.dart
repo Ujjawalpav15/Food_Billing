@@ -3,13 +3,17 @@ import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'data/hive_init.dart';
 import 'data/repositories/additional_item_entry_repository.dart';
+import 'data/repositories/adjustment_repository.dart';
 import 'data/repositories/customer_repository.dart';
 import 'data/repositories/meal_entry_repository.dart';
 import 'data/repositories/menu_item_repository.dart';
+import 'data/repositories/monthly_bill_repository.dart';
+import 'data/repositories/payment_repository.dart';
 import 'data/repositories/shop_profile_repository.dart';
 import 'providers/customer_provider.dart';
 import 'providers/daily_entry_provider.dart';
 import 'providers/menu_item_provider.dart';
+import 'providers/monthly_bill_provider.dart';
 import 'providers/shop_profile_provider.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'widgets/main_shell.dart';
@@ -17,23 +21,44 @@ import 'widgets/main_shell.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHive();
+
+  final customerRepo = CustomerRepository();
+  final shopRepo = ShopProfileRepository();
+  final menuRepo = MenuItemRepository();
+  final mealRepo = MealEntryRepository();
+  final extraRepo = AdditionalItemEntryRepository();
+  final adjustmentRepo = AdjustmentRepository();
+  final paymentRepo = PaymentRepository();
+  final billRepo = MonthlyBillRepository();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ShopProfileProvider(ShopProfileRepository()),
+          create: (_) => ShopProfileProvider(shopRepo),
         ),
         ChangeNotifierProvider(
-          create: (_) => CustomerProvider(CustomerRepository()),
+          create: (_) => CustomerProvider(customerRepo),
         ),
         ChangeNotifierProvider(
-          create: (_) => MenuItemProvider(MenuItemRepository()),
+          create: (_) => MenuItemProvider(menuRepo),
         ),
         ChangeNotifierProvider(
           create: (_) => DailyEntryProvider(
-            mealRepo: MealEntryRepository(),
-            extraRepo: AdditionalItemEntryRepository(),
-            shopRepo: ShopProfileRepository(),
+            mealRepo: mealRepo,
+            extraRepo: extraRepo,
+            shopRepo: shopRepo,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MonthlyBillProvider(
+            billRepo: billRepo,
+            mealRepo: mealRepo,
+            extraRepo: extraRepo,
+            adjustmentRepo: adjustmentRepo,
+            paymentRepo: paymentRepo,
+            customerRepo: customerRepo,
+            shopRepo: shopRepo,
           ),
         ),
       ],
