@@ -1,11 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/money_utils.dart';
+import '../../providers/customer_provider.dart';
+import '../../providers/daily_entry_provider.dart';
+import '../../providers/menu_item_provider.dart';
+import '../../providers/monthly_bill_provider.dart';
+import '../../providers/payment_provider.dart';
 import '../../providers/shop_profile_provider.dart';
+import '../../services/backup_service.dart';
 import '../menu/menu_screen.dart';
 import '../payments/payments_screen.dart';
 import 'edit_shop_profile_screen.dart';
@@ -162,6 +169,48 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
 
+          // ── Data Backup & Restore ─────────────────────────────────────
+          _SectionHeader(label: 'Data & Backup'),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withAlpha(20),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.backup_outlined,
+                        color: AppColors.primary),
+                  ),
+                  title: const Text('Backup Database'),
+                  subtitle: const Text(
+                      'Export all shop records, meals, and bills to a JSON file'),
+                  trailing: const Icon(Icons.share_outlined, size: 20),
+                  onTap: () => _handleBackup(context),
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.warning.withAlpha(20),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.settings_backup_restore_outlined,
+                        color: AppColors.warning),
+                  ),
+                  title: const Text('Restore Database'),
+                  subtitle: const Text(
+                      'Import data from a previous backup file (overwrites current records)'),
+                  trailing: const Icon(Icons.file_open_outlined, size: 20),
+                  onTap: () => _handleRestore(context),
+                ),
+              ],
+            ),
+          ),
+
           // ── App Info ──────────────────────────────────────────────────
           _SectionHeader(label: 'App'),
           Card(
@@ -194,6 +243,174 @@ class SettingsScreen extends StatelessWidget {
         builder: (_) => const EditShopProfileScreen(),
       ),
     );
+  }
+
+  Future<void> _handleBackup(BuildContext context) async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Preparing database backup...'),
+          duration: Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      await const BackupService().shareBackup();
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Backup failed: $e'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleRestore(BuildContext context) async {
+    try {
+      final jsonContent = await const BackupService().pickBackupFileContent();
+      if (jsonContent == null) return; // user cancelled
+
+      final validation = const BackupService().validateBackup(jsonContent);
+      if (!validation.isValid) {
+        if (context.mounted) {
+          showDialog<void>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Row(
+                children: [
+                  Icon(Icons.error_outline, color: AppColors.error),
+                  SizedBox(width: 8),
+                  Text('Invalid Backup File'),
+                ],
+              ),
+              content: Text(validation.errorMessage ?? 'The selected file is not a valid backup.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+        return;
+      }
+
+      final meta = validation.metadata!;
+
+      // Confirm with owner before replacing database
+      if (!context.mounted) return;
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: AppColors.error),
+              SizedBox(width: 8),
+              Text('Restore Database?'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'This will REPLACE all current data in the application with records from the selected backup file.',
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.divider),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Shop: ${meta.shopName ?? 'Mess Billing'}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text('Backup Date: ${DateFormat('dd MMM yyyy, HH:mm').format(meta.exportedAt)}'),
+                    Text('Customers: ${meta.customerCount}'),
+                    Text('Menu Items: ${meta.menuItemCount}'),
+                    Text('Meal Attendance: ${meta.mealEntryCount}'),
+                    Text('Payments: ${meta.paymentCount}'),
+                    Text('Monthly Bills: ${meta.monthlyBillCount}'),
+                    const Divider(height: 12),
+                    Text(
+                      'Total Records: ${meta.totalRecords}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Are you sure you want to proceed? Any current data not included in this backup will be permanently lost.',
+                style: TextStyle(
+                  color: AppColors.error,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Restore & Replace'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+
+      // Perform restore
+      await const BackupService().restoreFromJson(jsonContent);
+
+      // Reload all providers to update UI immediately
+      if (context.mounted) {
+        context.read<ShopProfileProvider>().reload();
+        context.read<CustomerProvider>().loadCustomers();
+        context.read<MenuItemProvider>().loadMenuItems();
+        context.read<DailyEntryProvider>().reload();
+        context.read<MonthlyBillProvider>().loadBills();
+        context.read<PaymentProvider>().loadPayments();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Database restored successfully (${meta.totalRecords} records).'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to restore database: $e'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 }
 

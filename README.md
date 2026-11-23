@@ -22,7 +22,7 @@ Mess owners in Nepal currently record student meals and extra purchases in noteb
 
 ## ✨ Features
 
-### ✅ Completed (Modules 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+### ✅ Completed (All Modules 1 – 12)
 - Offline-first local database using Hive CE
 - Complete data models with historical price preservation
 - Repository-based data access layer
@@ -38,9 +38,7 @@ Mess owners in Nepal currently record student meals and extra purchases in noteb
 - Payment management: cash/digital recording, partial/full payments, overpayment store credit, collection overview, and audit-safe voiding (Module 9)
 - Dashboard: financial overview, today's attendance progress, quick actions grid with tab routing, top pending dues list (Module 10)
 - PDF & Export: Printable itemized statement & ledger PDFs, interactive preview screen, printing, WhatsApp/system sharing, and CSV data export (Module 11)
-
-### 🔄 Next Up
-- Local backup & restore with validation (Module 12)
+- Backup & Restore: Versioned JSON database dumps across all 9 boxes, integrity validation, confirmation safety dialog, and instant provider reloads (Module 12)
 
 ---
 

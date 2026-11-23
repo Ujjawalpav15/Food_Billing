@@ -21,7 +21,7 @@
 | **M9** | Payment Management | Record payments, partial/full/overpayment, payment history | ✅ Complete |
 | **M10** | Dashboard | Summary stats, today's progress, quick actions | ✅ Complete |
 | **M11** | PDF & Export | PDF bill generation, CSV export, share functionality | ✅ Complete |
-| **M12** | Backup & Restore | Local backup to file, restore with validation | 🔄 Next Up |
+| **M12** | Backup & Restore | Local backup to file, restore with validation | ✅ Complete |
 
 ---
 
@@ -237,7 +237,14 @@ lib/
 ---
 
 ## 📋 Module 12 — Backup & Restore
-_Next Up_
+- [x] Full database dump to versioned JSON backup (`BackupService.createBackupJson`)
+- [x] All 9 Hive entities serialized with exact Paisa integers and stable IDs
+- [x] Export to local file & native system share via `share_plus`
+- [x] Pre-restore schema and integrity validator (`BackupValidationResult` and `BackupMetadata`)
+- [x] Confirmation dialog with preview summary before restoring (prevents silent data overwrites)
+- [x] Post-restore automatic provider reloads (`ShopProfile`, `Customer`, `MenuItem`, `DailyEntry`, `MonthlyBill`, `Payment`)
+- [x] SettingsScreen UI cards for "Backup Database" and "Restore Database"
+- [x] Unit tests in `backup_restore_test.dart` (validation & round-trip serialization)
 
 ---
 
@@ -262,4 +269,5 @@ _Next Up_
 | 2026-11-21 | M9 | Payment provider, record payment modal, payments collection screen, overpayment credit, and tests |
 | 2026-11-21 | M10 | Dashboard screen, financial hero card, today's attendance progress, quick actions grid, top dues, and tests |
 | 2026-11-21 | M11 | PDF statement generation, interactive preview, direct printing, WhatsApp share, CSV export, and tests |
+| 2026-11-23 | M12 | JSON backup serialization across all 9 boxes, schema validation, restore confirmation, settings UI, and tests |
 
