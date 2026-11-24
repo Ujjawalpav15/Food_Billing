@@ -183,4 +183,81 @@ void main() {
     await tester.tap(find.text('Daily Meals'));
     expect(navigatedTab, 1);
   });
+
+  testWidgets('Dashboard renders on small screen (320px width) without any overflow', (tester) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final now = DateTime.now();
+    final shopRepo = _FakeShopRepo(
+      ShopProfile(
+        id: 's1',
+        shopName: 'Annapurna Student Mess',
+        ownerName: 'Ram',
+        phoneNumber: '9841000000',
+        address: 'Kathmandu',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
+    final customerRepo = _FakeCustomerRepo();
+    customerRepo.customers.add(
+      Customer(
+        id: 'c1',
+        name: 'Suman Thapa',
+        phoneNumber: '9841111111',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ShopProfileProvider(shopRepo)),
+          ChangeNotifierProvider(create: (_) => CustomerProvider(customerRepo)),
+          ChangeNotifierProvider(
+            create: (_) => DailyEntryProvider(
+              mealRepo: _FakeMealRepo(),
+              extraRepo: _FakeExtraRepo(),
+              shopRepo: shopRepo,
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => MonthlyBillProvider(
+              billRepo: _FakeBillRepo(),
+              mealRepo: _FakeMealRepo(),
+              extraRepo: _FakeExtraRepo(),
+              adjustmentRepo: _FakeAdjustmentRepo(),
+              paymentRepo: _FakePaymentRepo(),
+              customerRepo: customerRepo,
+              shopRepo: shopRepo,
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => PaymentProvider(
+              paymentRepo: _FakePaymentRepo(),
+              customerRepo: customerRepo,
+              mealRepo: _FakeMealRepo(),
+              extraRepo: _FakeExtraRepo(),
+              adjustmentRepo: _FakeAdjustmentRepo(),
+            ),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const DashboardScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Verify no overflow error occurred
+    expect(tester.takeException(), isNull);
+    expect(find.text('Today’s Meal Attendance'), findsOneWidget);
+    expect(find.text('Daily Entry'), findsOneWidget);
+  });
 }
